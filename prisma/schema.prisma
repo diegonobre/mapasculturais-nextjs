@@ -1,0 +1,418 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id                Int       @id @default(autoincrement())
+  parent            Agent?    @relation("AgentToAgent", fields: [parent_id], references: [id])
+  parent_id         Int?
+  user              User      @relation(fields: [user_id], references: [id])
+  user_id           Int
+  type              Int       @db.SmallInt
+  name              String    @db.VarChar(255)
+  location          String?   @db.VarChar
+  geo_location      String?   @db.VarChar
+  short_description String?
+  long_description  String?
+  create_timestamp  DateTime
+  status            Int       @db.SmallInt
+  is_verified       Boolean   @default(false)
+  public_location   Boolean?
+  update_timestamp  DateTime?
+  subsite           Subsite?  @relation(fields: [subsite_id], references: [id])
+  subsite_id        Int?
+
+  children      Agent[]        @relation("AgentToAgent")
+  agent_meta    AgentMeta[]
+  spaces        Space[]
+  seals         Seal[]
+  projects      Project[]
+  events        Event[]
+  opportunities Opportunity[]
+  registrations Registration[]
+
+  @@map("agent")
+}
+
+model AgentMeta {
+  id        Int     @id @default(autoincrement())
+  object    Agent   @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String  @db.VarChar(255)
+  value     String?
+
+  @@map("agent_meta")
+}
+
+model User {
+  id                   Int      @id @default(autoincrement())
+  auth_provider        Int      @db.SmallInt
+  auth_uid             String   @db.VarChar(512)
+  email                String   @db.VarChar(255)
+  last_login_timestamp DateTime
+  create_timestamp     DateTime @default(now())
+  status               Int      @db.SmallInt
+
+  agents                   Agent[]
+  user_apps                UserApp[]
+  roles                    Role[]
+  registration_evaluations RegistrationEvaluation[]
+  user_meta                UserMeta[]
+
+  @@map("usr")
+}
+
+model Space {
+  id                Int       @id @default(autoincrement())
+  parent            Space?    @relation("SpaceToSpace", fields: [parent_id], references: [id])
+  parent_id         Int?
+  location          String?   @db.VarChar
+  geo_location      String?   @db.VarChar
+  name              String    @db.VarChar(255)
+  short_description String?
+  long_description  String?
+  create_timestamp  DateTime  @default(now())
+  status            Int       @db.SmallInt
+  type              Int       @db.SmallInt
+  agent             Agent?    @relation(fields: [agent_id], references: [id])
+  agent_id          Int?
+  is_verified       Boolean   @default(false)
+  public            Boolean   @default(false)
+  update_timestamp  DateTime?
+  subsite           Subsite?  @relation(fields: [subsite_id], references: [id])
+  subsite_id        Int?
+
+  children          Space[]           @relation("SpaceToSpace")
+  space_meta        SpaceMeta[]
+  event_occurrences EventOccurrence[]
+
+  @@map("space")
+}
+
+model SpaceMeta {
+  id        Int     @id @default(autoincrement())
+  object    Space   @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String  @db.VarChar(255)
+  value     String?
+
+  @@map("space_meta")
+}
+
+model Event {
+  id                Int       @id @default(autoincrement())
+  project           Project?  @relation(fields: [project_id], references: [id])
+  project_id        Int?
+  name              String    @db.VarChar(255)
+  short_description String
+  long_description  String?
+  rules             String?
+  create_timestamp  DateTime
+  status            Int       @db.SmallInt
+  agent             Agent?    @relation(fields: [agent_id], references: [id])
+  agent_id          Int?
+  is_verified       Boolean   @default(false)
+  type              Int       @db.SmallInt
+  update_timestamp  DateTime?
+  subsite           Subsite?  @relation(fields: [subsite_id], references: [id])
+  subsite_id        Int?
+
+  event_meta        EventMeta[]
+  event_occurrences EventOccurrence[]
+
+  @@map("event")
+}
+
+model EventMeta {
+  id        Int     @id @default(autoincrement())
+  object    Event   @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String  @db.VarChar(255)
+  value     String?
+
+  @@map("event_meta")
+}
+
+model EventOccurrence {
+  id            Int       @id @default(autoincrement())
+  space         Space     @relation(fields: [space_id], references: [id])
+  space_id      Int
+  event         Event     @relation(fields: [event_id], references: [id])
+  event_id      Int
+  rule          String?
+  starts_on     DateTime? @db.Date
+  ends_on       DateTime? @db.Date
+  starts_at     DateTime?
+  ends_at       DateTime?
+  frequency     String?   @db.VarChar
+  separation    Int       @default(1)
+  count         Int?
+  until         DateTime? @db.Date
+  timezone_name String    @default("Etc/UTC")
+  status        Int       @default(1) @db.SmallInt
+  description   String?
+  price         String?
+  priceinfo     String?
+
+  @@map("event_occurrence")
+}
+
+model Project {
+  id                Int       @id @default(autoincrement())
+  name              String    @db.VarChar(255)
+  short_description String?
+  long_description  String?
+  create_timestamp  DateTime
+  status            Int       @db.SmallInt
+  agent             Agent?    @relation(fields: [agent_id], references: [id])
+  agent_id          Int?
+  is_verified       Boolean   @default(false)
+  type              Int       @db.SmallInt
+  parent            Project?  @relation("ProjectToProject", fields: [parent_id], references: [id])
+  parent_id         Int?
+  starts_on         DateTime?
+  ends_on           DateTime?
+  update_timestamp  DateTime?
+  subsite           Subsite?  @relation(fields: [subsite_id], references: [id])
+  subsite_id        Int?
+
+  children     Project[]     @relation("ProjectToProject")
+  project_meta ProjectMeta[]
+  events       Event[]
+
+  @@map("project")
+}
+
+model ProjectMeta {
+  id        Int     @id @default(autoincrement())
+  object    Project @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String  @db.VarChar(255)
+  value     String?
+
+  @@map("project_meta")
+}
+
+model Opportunity {
+  id                          Int          @id @default(autoincrement())
+  parent                      Opportunity? @relation("OpportunityToOpportunity", fields: [parent_id], references: [id])
+  parent_id                   Int?
+  agent                       Agent        @relation(fields: [agent_id], references: [id])
+  agent_id                    Int
+  type                        Int?         @db.SmallInt
+  name                        String       @db.VarChar(255)
+  short_description           String?
+  long_description            String?
+  registration_from           DateTime?
+  registration_to             DateTime?
+  published_registrations     Boolean
+  registration_categories     String?
+  create_timestamp            DateTime
+  update_timestamp            DateTime?
+  status                      Int          @db.SmallInt
+  subsite                     Subsite?     @relation(fields: [subsite_id], references: [id])
+  subsite_id                  Int?
+  object_type                 String       @db.VarChar(255)
+  object_id                   Int
+  avaliable_evaluation_fields Json?
+  publish_timestamp           DateTime?
+  auto_publish                Boolean      @default(false)
+
+  children                        Opportunity[]                  @relation("OpportunityToOpportunity")
+  opportunity_meta                OpportunityMeta[]
+  registrations                   Registration[]
+  evaluation_method_configuration EvaluationMethodConfiguration?
+
+  @@map("opportunity")
+}
+
+model OpportunityMeta {
+  id        Int         @id @default(autoincrement())
+  object    Opportunity @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String      @db.VarChar(255)
+  value     String?
+
+  @@map("opportunity_meta")
+}
+
+model Registration {
+  id                      Int         @id @default(autoincrement())
+  opportunity             Opportunity @relation(fields: [opportunity_id], references: [id])
+  opportunity_id          Int
+  category                String?     @db.VarChar(255)
+  agent                   Agent       @relation(fields: [agent_id], references: [id])
+  agent_id                Int
+  create_timestamp        DateTime    @default(now())
+  sent_timestamp          DateTime?
+  status                  Int         @db.SmallInt
+  agents_data             String?
+  subsite                 Subsite?    @relation(fields: [subsite_id], references: [id])
+  subsite_id              Int?
+  consolidated_result     String?     @db.VarChar(255)
+  number                  String?     @db.VarChar(24)
+  valuers_exceptions_list String      @default("{\"include\": [], \"exclude\": []}")
+  space_data              String?
+
+  registration_meta        RegistrationMeta[]
+  registration_evaluations RegistrationEvaluation[]
+
+  @@map("registration")
+}
+
+model RegistrationMeta {
+  id        Int          @id @default(autoincrement())
+  object    Registration @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String       @db.VarChar(255)
+  value     String?
+
+  @@map("registration_meta")
+}
+
+model RegistrationEvaluation {
+  id               Int          @id @default(autoincrement())
+  registration     Registration @relation(fields: [registration_id], references: [id])
+  registration_id  Int
+  user             User         @relation(fields: [user_id], references: [id])
+  user_id          Int
+  result           String?      @db.VarChar(255)
+  evaluation_data  String
+  status           Int?         @db.SmallInt
+  create_timestamp DateTime     @default(now())
+  update_timestamp DateTime?
+
+  @@map("registration_evaluation")
+}
+
+model EvaluationMethodConfiguration {
+  id              Int         @id @default(autoincrement())
+  opportunity     Opportunity @relation(fields: [opportunity_id], references: [id])
+  opportunity_id  Int         @unique
+  type            String      @db.VarChar(255)
+  evaluation_from DateTime?
+  evaluation_to   DateTime?
+  name            String?     @db.VarChar(255)
+
+  evaluation_method_configuration_meta EvaluationMethodConfigurationMeta[]
+
+  @@map("evaluation_method_configuration")
+}
+
+model EvaluationMethodConfigurationMeta {
+  id        Int                           @id @default(autoincrement())
+  object    EvaluationMethodConfiguration @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String                        @db.VarChar(255)
+  value     String?
+
+  @@map("evaluationmethodconfiguration_meta")
+}
+
+model Seal {
+  id                Int       @id @default(autoincrement())
+  agent             Agent     @relation(fields: [agent_id], references: [id])
+  agent_id          Int
+  name              String    @db.VarChar(255)
+  short_description String?
+  long_description  String?
+  valid_period      Int       @db.SmallInt
+  create_timestamp  DateTime
+  status            Int       @db.SmallInt
+  certificate_text  String?
+  update_timestamp  DateTime?
+  subsite           Subsite?  @relation(fields: [subsite_id], references: [id])
+  subsite_id        Int?
+  locked_fields     Json      @default("[]")
+
+  seal_meta SealMeta[]
+
+  @@map("seal")
+}
+
+model SealMeta {
+  id        Int     @id @default(autoincrement())
+  object    Seal    @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String  @db.VarChar(255)
+  value     String?
+
+  @@map("seal_meta")
+}
+
+model Subsite {
+  id               Int      @id @default(autoincrement())
+  name             String   @db.VarChar(255)
+  create_timestamp DateTime
+  status           Int      @db.SmallInt
+  url              String   @db.VarChar(255)
+  namespace        String   @db.VarChar(50)
+  alias_url        String?  @db.VarChar(255)
+  verified_seals   String   @default("[]") @db.VarChar(512)
+
+  agents        Agent[]
+  spaces        Space[]
+  events        Event[]
+  projects      Project[]
+  opportunities Opportunity[]
+  registrations Registration[]
+  seals         Seal[]
+  subsite_meta  SubsiteMeta[]
+  UserApp       UserApp[]
+  Role          Role[]
+
+  @@map("subsite")
+}
+
+model SubsiteMeta {
+  id        Int     @id @default(autoincrement())
+  object    Subsite @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String  @db.VarChar(255)
+  value     String?
+
+  @@map("subsite_meta")
+}
+
+model UserApp {
+  public_key       String   @id @db.VarChar(64)
+  private_key      String   @db.VarChar(128)
+  user             User     @relation(fields: [user_id], references: [id])
+  user_id          Int
+  name             String
+  status           Int
+  create_timestamp DateTime
+  subsite          Subsite? @relation(fields: [subsite_id], references: [id])
+  subsite_id       Int?
+
+  @@map("user_app")
+}
+
+model UserMeta {
+  id        Int     @id @default(autoincrement())
+  object    User    @relation(fields: [object_id], references: [id])
+  object_id Int
+  key       String  @db.VarChar(255)
+  value     String?
+
+  @@map("user_meta")
+}
+
+model Role {
+  id         Int      @id @default(autoincrement())
+  user       User?    @relation(fields: [usr_id], references: [id])
+  usr_id     Int?
+  name       String   @db.VarChar(32)
+  subsite    Subsite? @relation(fields: [subsite_id], references: [id])
+  subsite_id Int?
+
+  @@map("role")
+}
