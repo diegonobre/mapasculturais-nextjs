@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Facebook, Twitter, Send, MapPin, Clock } from 'lucide-react';
 import Header from '@/components/layout/header';
+import Footer from '@/components/layout/footer';
 
 type Space = {
   id: string;
@@ -190,93 +191,7 @@ export default function SpaceDetailPage() {
         </Card>
       </main>
 
-      <footer className="bg-gray-100 dark:bg-gray-800 py-8">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="font-bold mb-2">Acesse</h3>
-              <ul className="space-y-1">
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Editais e oportunidades
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Eventos
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Agentes
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Espaços
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Projetos
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold mb-2">Painel</h3>
-              <ul className="space-y-1">
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Editais e oportunidades
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Meus eventos
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Meus agentes
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Meus espaços
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Sair
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold mb-2">Ajuda e privacidade</h3>
-              <ul className="space-y-1">
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Dúvidas frequentes
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Dúvidas e problemas com o sistema podem ser resolvidos pelo e-mail
-                    suporte@mapasculturais.com.br
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="mt-8 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              Plataforma livre e colaborativa mapas culturais, desenvolvida por Hacklab e mantida pelo MINC
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
