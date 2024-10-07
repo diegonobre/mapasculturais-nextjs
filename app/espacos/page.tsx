@@ -1,38 +1,44 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { toast } from "@/hooks/use-toast"
-import { Search, FileText } from 'lucide-react'
+import { Search, MapPin, Building } from 'lucide-react'
 import Header from '@/components/layout/header'
 
-const opportunities = [
+const spaces = [
   {
     id: 1,
-    title: "Qualificação de projetos de saúde da população",
-    description: "Estão abertas as inscrições para o processo de qualificação de projetos de saúde da população negra, quilombola, cigana e de terreiro/povos tradicionais de matriz africana.",
-    type: "Edital",
-    registrationDeadline: "10/05/2023",
+    name: "Teatro Livre - OngArteDuca",
+    location: "São Paulo, SP",
+    description: "Espaço cultural dedicado às artes cênicas, oferecendo apresentações teatrais, oficinas e cursos para a comunidade.",
+    imageUrl: "/placeholder.svg",
   },
   {
     id: 2,
-    title: "Edital da Política Nacional LGBT Brasil (PNLGBT)",
-    description: "O Ministério dos Direitos Humanos e da Cidadania (MDHC), por meio da Secretaria Nacional dos Direitos das Pessoas LGBTQIA+, torna público o presente Edital de Chamamento Público para a seleção de propostas...",
-    type: "Edital",
-    registrationDeadline: "15/05/2023",
+    name: "Associação Comunitária de Quilombo da Família Thomé",
+    location: "Salvador, BA",
+    description: "Centro cultural que preserva e promove a cultura quilombola, oferecendo atividades educativas e culturais.",
+    imageUrl: "/placeholder.svg",
   },
-  // Add more opportunities here...
+  {
+    id: 3,
+    name: "Centro Cultural Banco Bradesco",
+    location: "Rio de Janeiro, RJ",
+    description: "Espaço multifuncional que abriga exposições de arte, apresentações musicais e palestras sobre diversos temas culturais.",
+    imageUrl: "/placeholder.svg",
+  },
+  // Add more spaces here...
 ]
 
-export default function OpportunitiesPage() {
+export default function SpacesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,8 +48,8 @@ export default function OpportunitiesPage() {
     console.log('Form data:', { name })
     setIsModalOpen(false)
     toast({
-      title: "Oportunidade criada",
-      description: `A oportunidade "${name}" foi criada com sucesso.`,
+      title: "Espaço criado",
+      description: `O espaço "${name}" foi criado com sucesso.`,
       duration: 5000,
     })
   }
@@ -55,29 +61,29 @@ export default function OpportunitiesPage() {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold flex items-center space-x-2">
-            <FileText className="w-8 h-8 text-orange-500" />
-            <span>Oportunidades</span>
+            <Building className="w-8 h-8 text-green-500" />
+            <span>Espaços</span>
           </h1>
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button>
-                <FileText className="w-4 h-4 mr-2" />
-                Criar Oportunidade
+                <Building className="w-4 h-4 mr-2" />
+                Criar Espaço
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Criar Nova Oportunidade</DialogTitle>
+                <DialogTitle>Criar Novo Espaço</DialogTitle>
                 <DialogDescription>
-                  Preencha o formulário abaixo para criar uma nova oportunidade.
+                  Preencha o formulário abaixo para criar um novo espaço cultural.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Nome</Label>
-                  <Input id="name" name="name" placeholder="Digite o nome da oportunidade" required />
+                  <Label htmlFor="name">Nome do Espaço</Label>
+                  <Input id="name" name="name" placeholder="Digite o nome do espaço" required />
                 </div>
-                <Button type="submit">Criar Oportunidade</Button>
+                <Button type="submit">Criar Espaço</Button>
               </form>
             </DialogContent>
           </Dialog>
@@ -100,41 +106,34 @@ export default function OpportunitiesPage() {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="type">Tipo</Label>
-                  <Select>
-                    <SelectTrigger id="type">
-                      <SelectValue placeholder="Selecione o tipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="edital">Edital</SelectItem>
-                      <SelectItem value="oficina">Oficina</SelectItem>
-                      <SelectItem value="curso">Curso</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="area">Área de interesse</Label>
+                  <Label htmlFor="area">Área de atuação</Label>
                   <Select>
                     <SelectTrigger id="area">
                       <SelectValue placeholder="Selecione a área" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="artes">Artes</SelectItem>
+                      <SelectItem value="artes-visuais">Artes Visuais</SelectItem>
+                      <SelectItem value="teatro">Teatro</SelectItem>
                       <SelectItem value="musica">Música</SelectItem>
+                      <SelectItem value="danca">Dança</SelectItem>
                       <SelectItem value="literatura">Literatura</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label>Inscrições</Label>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="abertas" />
-                    <label htmlFor="abertas" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Abertas</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="encerradas" />
-                    <label htmlFor="encerradas" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Encerradas</label>
-                  </div>
+                <div>
+                  <Label htmlFor="type">Tipo de espaço</Label>
+                  <Select>
+                    <SelectTrigger id="type">
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="teatro">Teatro</SelectItem>
+                      <SelectItem value="museu">Museu</SelectItem>
+                      <SelectItem value="biblioteca">Biblioteca</SelectItem>
+                      <SelectItem value="centro-cultural">Centro Cultural</SelectItem>
+                      <SelectItem value="galeria">Galeria</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </CardContent>
             </Card>
@@ -142,14 +141,24 @@ export default function OpportunitiesPage() {
 
           <section className="w-full md:w-3/4">
             <div className="space-y-6">
-              {opportunities.map((opportunity) => (
-                <Card key={opportunity.id}>
-                  <CardHeader>
-                    <CardTitle>{opportunity.title}</CardTitle>
-                    <CardDescription>{opportunity.type} • Inscrições até {opportunity.registrationDeadline}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600 dark:text-gray-300">{opportunity.description}</p>
+              {spaces.map((space) => (
+                <Card key={space.id}>
+                  <CardContent className="flex items-start space-x-4 pt-6">
+                    <Image
+                      src={space.imageUrl}
+                      alt={`Imagem de ${space.name}`}
+                      width={64}
+                      height={64}
+                      className="rounded-lg object-cover"
+                    />
+                    <div className="flex-grow">
+                      <CardTitle>{space.name}</CardTitle>
+                      <CardDescription className="flex items-center mt-1">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {space.location}
+                      </CardDescription>
+                      <p className="text-gray-600 dark:text-gray-300 mt-2">{space.description}</p>
+                    </div>
                   </CardContent>
                   <CardFooter>
                     <Button>Acessar</Button>
@@ -189,28 +198,28 @@ export default function OpportunitiesPage() {
             <div>
               <h3 className="font-bold mb-2">Acesse</h3>
               <ul className="space-y-1">
-                <li><Link href="#" className="text-blue-500 hover:underline">Editais e oportunidades</Link></li>
-                <li><Link href="#" className="text-blue-500 hover:underline">Eventos</Link></li>
-                <li><Link href="#" className="text-blue-500 hover:underline">Agentes</Link></li>
-                <li><Link href="#" className="text-blue-500 hover:underline">Espaços</Link></li>
-                <li><Link href="#" className="text-blue-500 hover:underline">Projetos</Link></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Editais e oportunidades</a></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Eventos</a></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Agentes</a></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Espaços</a></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Projetos</a></li>
               </ul>
             </div>
             <div>
               <h3 className="font-bold mb-2">Painel</h3>
               <ul className="space-y-1">
-                <li><Link href="#" className="text-blue-500 hover:underline">Editais e oportunidades</Link></li>
-                <li><Link href="#" className="text-blue-500 hover:underline">Meus eventos</Link></li>
-                <li><Link href="#" className="text-blue-500 hover:underline">Meus agentes</Link></li>
-                <li><Link href="#" className="text-blue-500 hover:underline">Meus espaços</Link></li>
-                <li><Link href="#" className="text-blue-500 hover:underline">Sair</Link></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Editais e oportunidades</a></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Meus eventos</a></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Meus agentes</a></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Meus espaços</a></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Sair</a></li>
               </ul>
             </div>
             <div>
               <h3 className="font-bold mb-2">Ajuda e privacidade</h3>
               <ul className="space-y-1">
-                <li><Link href="#" className="text-blue-500 hover:underline">Dúvidas frequentes</Link></li>
-                <li><Link href="#" className="text-blue-500 hover:underline">Dúvidas e problemas com o sistema podem ser resolvidos pelo e-mail suporte@mapasculturais.com.br</Link></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Dúvidas frequentes</a></li>
+                <li><a href="#" className="text-blue-500 hover:underline">Dúvidas e problemas com o sistema podem ser resolvidos pelo e-mail suporte@mapasculturais.com.br</a></li>
               </ul>
             </div>
           </div>

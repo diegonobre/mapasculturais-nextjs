@@ -10,7 +10,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <header className="bg-white dark:bg-gray-800 shadow">
         <div className="container mx-auto px-4 py-2 flex items-center justify-between">
-          <Image src="/placeholder.svg" alt="Mapa da Cultura Logo" width={150} height={50} />
+          <Image src="/logo.svg" alt="Mapa da Cultura Logo" width={100} height={40} />
           <nav className="hidden md:flex space-x-4">
             <Link href="/oportunidades" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">Oportunidades</Link>
             <Link href="/eventos" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">Eventos</Link>

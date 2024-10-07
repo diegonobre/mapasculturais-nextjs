@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,25 +10,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Bell, Home, Users, Calendar, MapPin, FileText, Scissors, ChevronDown, Search, Menu } from 'lucide-react'
+import { Bell, Home, Users, Calendar, MapPin, FileText, Scissors, ChevronDown, Menu } from 'lucide-react'
 
 export default function Header() {
+  const currentRoute = usePathname();
+
   return (
     <header className="bg-white shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           <Link href="/" className="flex items-center space-x-2">
-            <Image src="/placeholder.svg" alt="Mapa da Cultura Logo" width={40} height={40} />
-            <span className="text-xl font-bold">MAPA DA CULTURA</span>
+            <Image src="/logo.svg" alt="Mapa da Cultura Logo" width={100} height={40} />
           </Link>
           
           <nav className="hidden md:flex space-x-4">
             <NavItem href="/" icon={<Home className="w-4 h-4" />} label="Home" />
-            <NavItem href="/oportunidades" icon={<FileText className="w-4 h-4" />} label="Oportunidades" isActive />
-            <NavItem href="/agentes" icon={<Users className="w-4 h-4" />} label="Agentes" />
-            <NavItem href="/eventos" icon={<Calendar className="w-4 h-4" />} label="Eventos" />
-            <NavItem href="/espacos" icon={<MapPin className="w-4 h-4" />} label="Espaços" />
-            <NavItem href="/projetos" icon={<FileText className="w-4 h-4" />} label="Projetos" />
+            <NavItem href="/oportunidades" icon={<FileText className="w-4 h-4" />} label="Oportunidades" isActive={currentRoute === '/oportunidades'} />
+            <NavItem href="/agentes" icon={<Users className="w-4 h-4" />} label="Agentes" isActive={currentRoute === '/agentes'} />
+            <NavItem href="/eventos" icon={<Calendar className="w-4 h-4" />} label="Eventos" isActive={currentRoute === '/eventos'} />
+            <NavItem href="/espacos" icon={<MapPin className="w-4 h-4" />} label="Espaços" isActive={currentRoute === '/espacos'} />
+            <NavItem href="/projetos" icon={<FileText className="w-4 h-4" />} label="Projetos" isActive={currentRoute === '/projetos'} />
             <NavItem href="https://www.gov.br/culturaviva/pt-br" icon={<Scissors className="w-4 h-4" />} label="Cultura Viva" />
           </nav>
           
@@ -67,31 +68,10 @@ export default function Header() {
             <ul className="flex space-x-2">
               <li><Link href="/" className="text-gray-500 hover:text-gray-700">INÍCIO</Link></li>
               <li className="before:content-['>'] before:mx-2 before:text-gray-500">
-                <Link href="/oportunidades" className="text-gray-900 font-semibold">OPORTUNIDADES</Link>
+                <span className="text-gray-900 font-semibold">{currentRoute.replaceAll('/', '').toUpperCase()}</span>
               </li>
             </ul>
           </nav>
-        </div>
-      </div>
-      
-      <div className="border-t">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-            <h1 className="text-2xl font-bold flex items-center space-x-2">
-              <FileText className="w-8 h-8 text-orange-500" />
-              <span>Oportunidades</span>
-            </h1>
-            <div className="flex space-x-4">
-              <div className="relative flex-grow max-w-md">
-                <Input type="text" placeholder="Buscar..." className="pl-10" />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              </div>
-              <Button>
-                <FileText className="w-4 h-4 mr-2" />
-                Criar Oportunidade
-              </Button>
-            </div>
-          </div>
         </div>
       </div>
     </header>
