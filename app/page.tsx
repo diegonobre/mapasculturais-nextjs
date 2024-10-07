@@ -29,8 +29,12 @@ export default function Home() {
             </Link>
           </nav>
           <div className="flex items-center space-x-2">
-            <Button variant="outline">Entrar</Button>
-            <Button>Cadastrar</Button>
+            <Link href="/perfil">
+              <Button variant="outline">Entrar</Button>
+            </Link>
+            <Link href="/perfil">
+              <Button>Cadastrar</Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -130,16 +134,19 @@ export default function Home() {
                   {[
                     {
                       title: '"Cordel 2.0: a Periferia e a Literatura" oficina em IFPB(CNPJ: 244715)',
+                      href: '/projetos/1',
                       description:
                         'O projeto abordará a história da literatura de cordel, sua importância cultural e sua evolução na era digital.',
                     },
                     {
                       title: 'ASSOCIAÇÃO BENEFICENTE NOSSA SENHORA DE FÁTIMA',
+                      href: '/agentes/1',
                       description:
                         'Associação sem fins lucrativos que atua na promoção da cultura e assistência social.',
                     },
                     {
                       title: 'ASSOCIAÇÃO CULTURAL SANTA EDWIGES',
+                      href: '/agentes/2',
                       description: 'Entidade dedicada à preservação e promoção da cultura local.',
                     },
                   ].map((item, index) => (
@@ -151,7 +158,9 @@ export default function Home() {
                         <CardDescription>{item.description}</CardDescription>
                       </CardContent>
                       <CardFooter>
-                        <Button>Acessar</Button>
+                        <Link href={item.href}>
+                          <Button>Acessar</Button>
+                        </Link>
                       </CardFooter>
                     </Card>
                   ))}
@@ -169,7 +178,9 @@ export default function Home() {
               cadastrar no Mapa da Cultura, você poderá inserir e editar informações sobre eventos, espaços e
               agentes culturais em todo o Brasil.
             </p>
-            <Button size="lg">Fazer Cadastro</Button>
+            <Link href="/oportunidades">
+              <Button size="lg">Fazer Cadastro</Button>
+            </Link>
           </div>
         </section>
       </main>

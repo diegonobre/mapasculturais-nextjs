@@ -80,7 +80,9 @@ export default function Header() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Perfil</DropdownMenuItem>
+                <Link href="/perfil" className="cursor-pointer">
+                  <DropdownMenuItem>Perfil</DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem>Configurações</DropdownMenuItem>
                 <DropdownMenuItem>Sair</DropdownMenuItem>
               </DropdownMenuContent>
