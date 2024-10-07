@@ -1,58 +1,185 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Image from 'next/image'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { toast } from "@/hooks/use-toast"
-import { Search, MapPin, Building } from 'lucide-react'
-import Header from '@/components/layout/header'
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { toast } from '@/hooks/use-toast';
+import { Search, MapPin, X } from 'lucide-react';
+import Header from '@/components/layout/header';
 
-const spaces = [
+type Space = {
+  id: number;
+  name: string;
+  type: string;
+  areasOfOperation: string[];
+  description: string;
+  location: string;
+};
+
+const spaceTypes = [
+  'Biblioteca',
+  'Centro Cultural',
+  'Cinema',
+  'Museu',
+  'Teatro',
+  'Galeria de Arte',
+  'Espaço Multiuso',
+  'Auditório',
+  'Parque',
+  'Praça',
+];
+
+const areasOfOperation = [
+  'Artes Visuais',
+  'Audiovisual',
+  'Circo',
+  'Dança',
+  'Literatura',
+  'Música',
+  'Patrimônio Cultural',
+  'Teatro',
+  'Cultura Popular',
+  'Cultura Digital',
+];
+
+// Sample data
+const sampleSpaces: Space[] = [
   {
     id: 1,
-    name: "Teatro Livre - OngArteDuca",
-    location: "São Paulo, SP",
-    description: "Espaço cultural dedicado às artes cênicas, oferecendo apresentações teatrais, oficinas e cursos para a comunidade.",
-    imageUrl: "/placeholder.svg",
+    name: 'Centro Cultural Paulo Freire',
+    type: 'Centro Cultural',
+    areasOfOperation: ['Literatura', 'Música', 'Teatro'],
+    description: 'Espaço dedicado à promoção da educação e cultura popular.',
+    location: 'São Paulo, SP',
   },
   {
     id: 2,
-    name: "Associação Comunitária de Quilombo da Família Thomé",
-    location: "Salvador, BA",
-    description: "Centro cultural que preserva e promove a cultura quilombola, oferecendo atividades educativas e culturais.",
-    imageUrl: "/placeholder.svg",
+    name: 'Museu de Arte Moderna',
+    type: 'Museu',
+    areasOfOperation: ['Artes Visuais', 'Cultura Digital'],
+    description: 'Museu com exposições de arte contemporânea e moderna.',
+    location: 'Rio de Janeiro, RJ',
   },
   {
     id: 3,
-    name: "Centro Cultural Banco Bradesco",
-    location: "Rio de Janeiro, RJ",
-    description: "Espaço multifuncional que abriga exposições de arte, apresentações musicais e palestras sobre diversos temas culturais.",
-    imageUrl: "/placeholder.svg",
+    name: 'Teatro Municipal',
+    type: 'Teatro',
+    areasOfOperation: ['Teatro', 'Dança', 'Música'],
+    description: 'Principal teatro da cidade, com programação diversificada.',
+    location: 'Belo Horizonte, MG',
   },
-  // Add more spaces here...
-]
+  {
+    id: 4,
+    name: 'Biblioteca Pública Estadual',
+    type: 'Biblioteca',
+    areasOfOperation: ['Literatura', 'Patrimônio Cultural'],
+    description: 'Acervo diversificado e espaços para estudo e pesquisa.',
+    location: 'Porto Alegre, RS',
+  },
+  {
+    id: 5,
+    name: 'Parque das Artes',
+    type: 'Parque',
+    areasOfOperation: ['Artes Visuais', 'Música', 'Cultura Popular'],
+    description: 'Área verde com espaços para exposições e apresentações ao ar livre.',
+    location: 'Recife, PE',
+  },
+];
 
 export default function SpacesPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [spaces, setSpaces] = useState<Space[]>(sampleSpaces);
+  const [filteredSpaces, setFilteredSpaces] = useState<Space[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedType, setSelectedType] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3;
+
+  const [newSpace, setNewSpace] = useState<Space>({
+    id: 0,
+    name: '',
+    type: '',
+    areasOfOperation: [],
+    description: '',
+    location: '',
+  });
+
+  useEffect(() => {
+    filterSpaces();
+  }, [spaces, searchTerm, selectedType, currentPage]);
+
+  const filterSpaces = () => {
+    let filtered = [...spaces].reverse(); // Reverse the array to show latest items first
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (space) =>
+          space.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          space.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          space.location.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
+    }
+
+    if (selectedType) {
+      filtered = filtered.filter((space) => space.type === selectedType);
+    }
+
+    setFilteredSpaces(filtered);
+  };
+
+  const clearFilters = () => {
+    setSearchTerm('');
+    setSelectedType('');
+  };
+
+  const paginatedSpaces = filteredSpaces.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const totalPages = Math.ceil(filteredSpaces.length / itemsPerPage);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    const name = formData.get('name')
-    console.log('Form data:', { name })
-    setIsModalOpen(false)
+    event.preventDefault();
+    const newId = spaces.length > 0 ? Math.max(...spaces.map((s) => s.id)) + 1 : 1;
+    const createdSpace = { ...newSpace, id: newId };
+    setSpaces([createdSpace, ...spaces]); // Add new space to the beginning of the array
+    setIsModalOpen(false);
     toast({
-      title: "Espaço criado",
-      description: `O espaço "${name}" foi criado com sucesso.`,
+      title: 'Espaço criado',
+      description: `O espaço "${createdSpace.name}" foi criado com sucesso.`,
       duration: 5000,
-    })
-  }
+    });
+    setNewSpace({
+      id: 0,
+      name: '',
+      type: '',
+      areasOfOperation: [],
+      description: '',
+      location: '',
+    });
+    setCurrentPage(1); // Reset to first page to show the new item
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -61,29 +188,98 @@ export default function SpacesPage() {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold flex items-center space-x-2">
-            <Building className="w-8 h-8 text-green-500" />
+            <MapPin className="w-8 h-8 text-blue-500" />
             <span>Espaços</span>
           </h1>
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Building className="w-4 h-4 mr-2" />
+                <MapPin className="w-4 h-4 mr-2" />
                 Criar Espaço
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Criar Novo Espaço</DialogTitle>
-                <DialogDescription>
-                  Preencha o formulário abaixo para criar um novo espaço cultural.
-                </DialogDescription>
+                <DialogTitle>Criar Espaço</DialogTitle>
+                <DialogDescription>Crie um espaço com informações básicas e de forma rápida</DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Nome do Espaço</Label>
-                  <Input id="name" name="name" placeholder="Digite o nome do espaço" required />
+                  <Label htmlFor="name">Nome</Label>
+                  <Input
+                    id="name"
+                    value={newSpace.name}
+                    onChange={(e) => setNewSpace({ ...newSpace, name: e.target.value })}
+                    placeholder="Digite o nome do espaço"
+                  />
                 </div>
-                <Button type="submit">Criar Espaço</Button>
+                <div>
+                  <Label htmlFor="type">Selecione o tipo do espaço</Label>
+                  <Select onValueChange={(value) => setNewSpace({ ...newSpace, type: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {spaceTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Área de Atuação</Label>
+                  <ScrollArea className="h-[200px] w-full border rounded-md">
+                    {areasOfOperation.map((area) => (
+                      <div key={area} className="flex items-center space-x-2 p-4">
+                        <Checkbox
+                          id={area}
+                          checked={newSpace.areasOfOperation.includes(area)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setNewSpace({ ...newSpace, areasOfOperation: [...newSpace.areasOfOperation, area] });
+                            } else {
+                              setNewSpace({
+                                ...newSpace,
+                                areasOfOperation: newSpace.areasOfOperation.filter((a) => a !== area),
+                              });
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor={area}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {area}
+                        </label>
+                      </div>
+                    ))}
+                  </ScrollArea>
+                </div>
+                <div>
+                  <Label htmlFor="description">Adicione uma Descrição curta para o Espaço</Label>
+                  <Textarea
+                    id="description"
+                    value={newSpace.description}
+                    onChange={(e) => setNewSpace({ ...newSpace, description: e.target.value })}
+                    placeholder="Descrição do espaço"
+                    className="h-[100px]"
+                    maxLength={400}
+                  />
+                  <div className="text-sm text-gray-500 text-right">{newSpace.description.length}/400</div>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <DialogClose asChild>
+                    <Button type="button" variant="secondary">
+                      Cancelar
+                    </Button>
+                  </DialogClose>
+                  <Button type="button" variant="secondary">
+                    Criar em Rascunho
+                  </Button>
+                  <Button type="submit">Criar e Publicar</Button>
+                </div>
               </form>
             </DialogContent>
           </Dialog>
@@ -99,66 +295,55 @@ export default function SpacesPage() {
                 <div>
                   <Label htmlFor="search">Palavra-chave</Label>
                   <div className="flex items-center">
-                    <Input id="search" placeholder="Buscar..." />
+                    <Input
+                      id="search"
+                      placeholder="Buscar..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                     <Button size="icon" className="ml-2">
                       <Search className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="area">Área de atuação</Label>
-                  <Select>
-                    <SelectTrigger id="area">
-                      <SelectValue placeholder="Selecione a área" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="artes-visuais">Artes Visuais</SelectItem>
-                      <SelectItem value="teatro">Teatro</SelectItem>
-                      <SelectItem value="musica">Música</SelectItem>
-                      <SelectItem value="danca">Dança</SelectItem>
-                      <SelectItem value="literatura">Literatura</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="type">Tipo de espaço</Label>
-                  <Select>
+                  <Label htmlFor="type">Tipo de Espaço</Label>
+                  <Select value={selectedType} onValueChange={setSelectedType}>
                     <SelectTrigger id="type">
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="teatro">Teatro</SelectItem>
-                      <SelectItem value="museu">Museu</SelectItem>
-                      <SelectItem value="biblioteca">Biblioteca</SelectItem>
-                      <SelectItem value="centro-cultural">Centro Cultural</SelectItem>
-                      <SelectItem value="galeria">Galeria</SelectItem>
+                      {spaceTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
+                <Button onClick={clearFilters} variant="outline" className="w-full">
+                  <X className="w-4 h-4 mr-2" />
+                  Limpar filtros
+                </Button>
               </CardContent>
             </Card>
           </aside>
 
           <section className="w-full md:w-3/4">
             <div className="space-y-6">
-              {spaces.map((space) => (
+              {paginatedSpaces.map((space) => (
                 <Card key={space.id}>
-                  <CardContent className="flex items-start space-x-4 pt-6">
-                    <Image
-                      src={space.imageUrl}
-                      alt={`Imagem de ${space.name}`}
-                      width={64}
-                      height={64}
-                      className="rounded-lg object-cover"
-                    />
-                    <div className="flex-grow">
-                      <CardTitle>{space.name}</CardTitle>
-                      <CardDescription className="flex items-center mt-1">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {space.location}
-                      </CardDescription>
-                      <p className="text-gray-600 dark:text-gray-300 mt-2">{space.description}</p>
-                    </div>
+                  <CardHeader>
+                    <CardTitle>{space.name}</CardTitle>
+                    <CardDescription>
+                      {space.type} • {space.location}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Áreas de atuação: {space.areasOfOperation.join(', ')}
+                    </p>
+                    <p className="text-gray-600 dark:text-gray-300 mt-2">{space.description}</p>
                   </CardContent>
                   <CardFooter>
                     <Button>Acessar</Button>
@@ -169,22 +354,29 @@ export default function SpacesPage() {
             <Pagination className="mt-8">
               <PaginationContent>
                 <PaginationItem>
-                  <PaginationPrevious href="#" />
+                  <PaginationPrevious
+                    href="#"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                  />
                 </PaginationItem>
+                {[...Array(totalPages)].map((_, i) => (
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      href="#"
+                      onClick={() => setCurrentPage(i + 1)}
+                      isActive={currentPage === i + 1}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
                 <PaginationItem>
-                  <PaginationLink href="#">1</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#" isActive>2</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationLink href="#">3</PaginationLink>
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-                <PaginationItem>
-                  <PaginationNext href="#" />
+                  <PaginationNext
+                    href="#"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                  />
                 </PaginationItem>
               </PaginationContent>
             </Pagination>
@@ -198,36 +390,87 @@ export default function SpacesPage() {
             <div>
               <h3 className="font-bold mb-2">Acesse</h3>
               <ul className="space-y-1">
-                <li><a href="#" className="text-blue-500 hover:underline">Editais e oportunidades</a></li>
-                <li><a href="#" className="text-blue-500 hover:underline">Eventos</a></li>
-                <li><a href="#" className="text-blue-500 hover:underline">Agentes</a></li>
-                <li><a href="#" className="text-blue-500 hover:underline">Espaços</a></li>
-                <li><a href="#" className="text-blue-500 hover:underline">Projetos</a></li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Editais e oportunidades
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Eventos
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Agentes
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Espaços
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Projetos
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="font-bold mb-2">Painel</h3>
               <ul className="space-y-1">
-                <li><a href="#" className="text-blue-500 hover:underline">Editais e oportunidades</a></li>
-                <li><a href="#" className="text-blue-500 hover:underline">Meus eventos</a></li>
-                <li><a href="#" className="text-blue-500 hover:underline">Meus agentes</a></li>
-                <li><a href="#" className="text-blue-500 hover:underline">Meus espaços</a></li>
-                <li><a href="#" className="text-blue-500 hover:underline">Sair</a></li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Editais e oportunidades
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Meus eventos
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Meus agentes
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Meus espaços
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Sair
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="font-bold mb-2">Ajuda e privacidade</h3>
               <ul className="space-y-1">
-                <li><a href="#" className="text-blue-500 hover:underline">Dúvidas frequentes</a></li>
-                <li><a href="#" className="text-blue-500 hover:underline">Dúvidas e problemas com o sistema podem ser resolvidos pelo e-mail suporte@mapasculturais.com.br</a></li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Dúvidas frequentes
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-500 hover:underline">
+                    Dúvidas e problemas com o sistema podem ser resolvidos pelo e-mail
+                    suporte@mapasculturais.com.br
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
           <div className="mt-8 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">Plataforma livre e colaborativa mapas culturais, desenvolvida por Hacklab e mantida pelo MINC</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Plataforma livre e colaborativa mapas culturais, desenvolvida por Hacklab e mantida pelo MINC
+            </p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }

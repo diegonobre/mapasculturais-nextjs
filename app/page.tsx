@@ -15,14 +15,14 @@ export default function Home() {
             <Link href="/oportunidades" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
               Oportunidades
             </Link>
+            <Link href="/agentes" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
+              Agentes
+            </Link>
             <Link href="/eventos" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
               Eventos
             </Link>
             <Link href="/espacos" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
               Espaços
-            </Link>
-            <Link href="/agentes" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
-              Agentes
             </Link>
             <Link href="/projetos" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
               Projetos
@@ -256,10 +256,11 @@ export default function Home() {
           </div>
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Plataforma livre e colaborativa mapas culturais, desenvolvida por Hacklab e mantida pelo MINC
+              Plataforma livre e colaborativa mapas culturais, desenvolvida por Hacklab e mantida pelo MINC. Versão
+              Cleodon Silva por Diego Nobre.
             </p>
             <Link
-              href="https://github.com/mapasculturais/mapasculturais"
+              href="https://github.com/diegonobre/mapasculturais-nextjs"
               className="inline-flex items-center text-blue-500 hover:underline mt-2"
             >
               <Github className="w-4 h-4 mr-1" />
