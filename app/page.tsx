@@ -12,19 +12,19 @@ export default function Home() {
         <div className="container mx-auto px-4 py-2 flex items-center justify-between">
           <Image src="/logo.svg" alt="Mapa da Cultura Logo" width={100} height={40} />
           <nav className="hidden md:flex space-x-4">
-            <Link href="/oportunidades" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
+            <Link href="/oportunidades" className="text-gray-600 dark:text-gray-300 hover:text-black">
               Oportunidades
             </Link>
-            <Link href="/agentes" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
+            <Link href="/agentes" className="text-gray-600 dark:text-gray-300 hover:text-black">
               Agentes
             </Link>
-            <Link href="/eventos" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
+            <Link href="/eventos" className="text-gray-600 dark:text-gray-300 hover:text-black">
               Eventos
             </Link>
-            <Link href="/espacos" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
+            <Link href="/espacos" className="text-gray-600 dark:text-gray-300 hover:text-black">
               Espaços
             </Link>
-            <Link href="/projetos" className="text-gray-600 dark:text-gray-300 hover:text-blue-500">
+            <Link href="/projetos" className="text-gray-600 dark:text-gray-300 hover:text-black">
               Projetos
             </Link>
           </nav>
@@ -97,7 +97,7 @@ export default function Home() {
             ].map((item, index) => (
               <Card key={index} className="flex flex-col">
                 <CardHeader>
-                  <item.icon className="w-12 h-12 text-blue-500 mb-2" />
+                  <item.icon className="w-12 h-12 text-black mb-2" />
                   <CardTitle>{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
@@ -181,27 +181,27 @@ export default function Home() {
               <h3 className="font-bold mb-2">Acesse</h3>
               <ul className="space-y-1">
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Editais e oportunidades
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Eventos
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Agentes
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Espaços
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Projetos
                   </Link>
                 </li>
@@ -211,27 +211,27 @@ export default function Home() {
               <h3 className="font-bold mb-2">Painel</h3>
               <ul className="space-y-1">
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Editais e oportunidades
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Meus eventos
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Meus agentes
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Meus espaços
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Sair
                   </Link>
                 </li>
@@ -241,12 +241,12 @@ export default function Home() {
               <h3 className="font-bold mb-2">Ajuda e privacidade</h3>
               <ul className="space-y-1">
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Dúvidas frequentes
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-blue-500 hover:underline">
+                  <Link href="#" className="text-black hover:underline">
                     Dúvidas e problemas com o sistema podem ser resolvidos pelo e-mail
                     suporte@mapasculturais.com.br
                   </Link>
@@ -256,12 +256,15 @@ export default function Home() {
           </div>
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Plataforma livre e colaborativa mapas culturais, desenvolvida por Hacklab e mantida pelo MINC. Versão
-              Cleodon Silva por Diego Nobre.
+              Plataforma livre e colaborativa mapas culturais, desenvolvida por Hacklab e mantida pelo MINC.
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Versão Cleodon Silva por Recursive Solutions.
             </p>
             <Link
               href="https://github.com/diegonobre/mapasculturais-nextjs"
-              className="inline-flex items-center text-blue-500 hover:underline mt-2"
+              target="_blank"
+              className="inline-flex items-center text-black hover:underline mt-2"
             >
               <Github className="w-4 h-4 mr-1" />
               Conheça o repositório
