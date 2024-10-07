@@ -29,6 +29,7 @@ import { toast } from '@/hooks/use-toast';
 import { Search, FileText, X } from 'lucide-react';
 import Header from '@/components/layout/header';
 import { Opportunity, opportunityTypes, areasOfInterest } from '@/data/types';
+import Link from 'next/link';
 
 // Sample data
 const sampleOpportunities: Opportunity[] = [
@@ -380,7 +381,9 @@ export default function OpportunitiesPage() {
                     </p>
                   </CardContent>
                   <CardFooter>
-                    <Button>Acessar</Button>
+                    <Link href={`/oportunidades/${opportunity.id}/`}>
+                      <Button>Acessar</Button>
+                    </Link>
                   </CardFooter>
                 </Card>
               ))}

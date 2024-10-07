@@ -29,6 +29,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from '@/hooks/use-toast';
 import { Search, MapPin, X } from 'lucide-react';
 import Header from '@/components/layout/header';
+import Link from 'next/link';
 
 type Space = {
   id: number;
@@ -346,7 +347,9 @@ export default function SpacesPage() {
                     <p className="text-gray-600 dark:text-gray-300 mt-2">{space.description}</p>
                   </CardContent>
                   <CardFooter>
-                    <Button>Acessar</Button>
+                    <Link href={`/espacos/${space.id}/`}>
+                      <Button>Acessar</Button>
+                    </Link>
                   </CardFooter>
                 </Card>
               ))}

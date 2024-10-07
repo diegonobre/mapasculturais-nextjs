@@ -29,6 +29,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from '@/hooks/use-toast';
 import { Search, Users, X } from 'lucide-react';
 import Header from '@/components/layout/header';
+import Link from 'next/link';
 
 type Agent = {
   id: number;
@@ -351,7 +352,9 @@ export default function AgentsPage() {
                     <p className="text-gray-600 dark:text-gray-300 mt-2">{agent.description}</p>
                   </CardContent>
                   <CardFooter>
-                    <Button>Acessar</Button>
+                    <Link href={`/agentes/${agent.id}/`}>
+                      <Button>Acessar</Button>
+                    </Link>
                   </CardFooter>
                 </Card>
               ))}

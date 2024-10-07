@@ -27,6 +27,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
 import { Search, Folder, X } from 'lucide-react';
 import Header from '@/components/layout/header';
+import Link from 'next/link';
 
 type Project = {
   id: number;
@@ -290,7 +291,9 @@ export default function ProjectsPage() {
                     <p className="text-gray-600 dark:text-gray-300">{project.description}</p>
                   </CardContent>
                   <CardFooter>
-                    <Button>Acessar</Button>
+                    <Link href={`/projetos/${project.id}/`}>
+                      <Button>Acessar</Button>
+                    </Link>
                   </CardFooter>
                 </Card>
               ))}

@@ -29,6 +29,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { toast } from '@/hooks/use-toast';
 import { Search, Calendar, X } from 'lucide-react';
 import Header from '@/components/layout/header';
+import Link from 'next/link';
 
 type Event = {
   id: number;
@@ -337,7 +338,9 @@ export default function EventsPage() {
                     <p className="text-gray-600 dark:text-gray-300 mt-2">{event.description}</p>
                   </CardContent>
                   <CardFooter>
-                    <Button>Acessar</Button>
+                    <Link href={`/eventos/${event.id}/`}>
+                      <Button>Acessar</Button>
+                    </Link>
                   </CardFooter>
                 </Card>
               ))}
